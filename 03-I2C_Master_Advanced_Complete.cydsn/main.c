@@ -278,13 +278,18 @@ int main(void)
     for(;;)
     {
         CyDelay(100);
-        error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
+		
+		error=I2C_Peripheral_ReadRegisterMulti(LIS3DH_DEVICE_ADDRESS,
+												LIS3DH_OUT_ADC_3L, 2,
+												TemperatureData);
+												
+        /*error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
                                             LIS3DH_OUT_ADC_3L,
                                             &TemperatureData[0]);
         
         error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
                                             LIS3DH_OUT_ADC_3H,
-                                            &TemperatureData[1]);
+                                            &TemperatureData[1]);*/
         if(error == NO_ERROR)
         {
             OutTemp = (int16)((TemperatureData[0] | (TemperatureData[1]<<8)))>>6;
