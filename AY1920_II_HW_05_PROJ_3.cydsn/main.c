@@ -88,10 +88,79 @@ int main(void)
                                          LIS3DH_CTRL_REG4,
                                          ctrl_reg4);
     }
+     //Brief output acceleration data variables:
+    uint8_t AccelerationData[6];
+    int16_t X_Out;
+    int16_t X_Out_mg;
+    //int32_t X_Out_ms2;
+    int16_t Y_Out;
+    int16_t Y_Out_mg;
+    //int32_t Y_Out_ms2;
+    int16_t Z_Out;
+    int16_t Z_Out_mg;
+    //int32_t Z_Out_ms2;
+    uint8_t OutArray[8];
+    #define HEADER 0xA0
+    #define FOOTER 0xC0
     
+    //Header and footer for communication w/ Bridge Control Panel
+    OutArray[0]=HEADER;
+    OutArray[7]=FOOTER;
     
+    for(;;)
+    {
+        CyDelay(100);
         
-   
+       //Reading STATUS REGISTER to check for data availability
+       uint8_t status_reg;
+       error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
+                                        LIS3DH_STATUS_REG,
+                                        &status_reg);
+        if (error == NO_ERROR)
+        {
+            // Check if new data is available (STATUS_REG[3]=ZYXDA=1)
+            if ((status_reg & 0x08) > 0)
+            {
+                    //Multiple register reading starting from OUT_X_L
+                    error=I2C_Peripheral_ReadRegisterMulti(LIS3DH_DEVICE_ADDRESS,
+												LIS3DH_OUT_X_L, 6,
+												AccelerationData); 
+                    if (error == NO_ERROR)
+                    {
+                    
+                        // Conversion of output data into right-justified 16 bit int (x-axis)
+                        X_Out=(int16)(AccelerationData[0] | (AccelerationData[1] << 8)) >> 4;
+                        // Data * sensitivity -> output data in mg (x-axis)
+                        X_Out_mg=X_Out*2;
+                        //LSB (x-axis)
+                        OutArray[1]=(uint8_t)(X_Out_mg & 0xF);
+                        //MSB (x-axis)
+                        OutArray[2]=(uint8_t)(X_Out_mg >> 8);
+                        
+                        // Conversion of output data into right-justified 16 bit int (y-axis)
+                        Y_Out=(int16)(AccelerationData[2] | (AccelerationData[3] << 8)) >> 4;
+                        // Data * sensitivity -> output data in mg (y-axis)
+                        Y_Out_mg=Y_Out*2;
+                        //LSB (y-axis)
+                        OutArray[3]=(uint8_t)(Y_Out_mg & 0xFF);
+                        //MSB (y-axis)
+                        OutArray[4]=(uint8_t)(Y_Out_mg >> 8);
+                        
+                        // Conversion of output data into right-justified 16 bit int (z-axis)
+                        Z_Out=(int16)(AccelerationData[4] | (AccelerationData[5] << 8)) >> 4;
+                        // Data * sensitivity -> output data in mg (z-axis)
+                        Z_Out_mg=Z_Out*2;
+                        //LSB (z-axis)
+                        OutArray[5]=(uint8_t)(Z_Out_mg & 0xFF);
+                        //MSB (z-axis)
+                        OutArray[6]=(uint8_t)(Z_Out_mg >> 8);
+                    
+                        UART_Debug_PutArray(OutArray,8);
+                    }
+            }
+        } 
+        
+    }
 }
 
 /* [] END OF FILE */
