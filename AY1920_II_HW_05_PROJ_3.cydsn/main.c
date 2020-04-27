@@ -12,6 +12,7 @@
 
 // Include header files
 #include "I2C_Interface.h"
+#include "InterruptRoutines.h"
 #include "project.h"
 #include "stdio.h"
 
@@ -56,13 +57,17 @@ CTRL_REG4[5:4]=FS[1:0]=01 (4.0 g FSR) */
 //Brief value of sensitivity in High Resolution mode (2 mg/digit)
 #define HR_SENSITIVITY 2;
 
+extern uint8_t flag;
+
 int main(void)
 {
     CyGlobalIntEnable; 
     
     //Initialization
+    Timer_LISD3H_Start();
     I2C_Peripheral_Start();
     UART_Debug_Start();
+    ISR_DataReady_StartEx(DataReady_ISR);
     
     //"The boot procedure is complete about 5 milliseconds after device power-up."
     CyDelay(5); 
@@ -118,18 +123,17 @@ int main(void)
     
     for(;;)
     {
-        CyDelay(100);
-        
-       //Reading STATUS REGISTER to check for data availability
-       uint8_t status_reg;
-       error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
+        if (flag == 1){
+            //Reading STATUS REGISTER to check for data availability
+            uint8_t status_reg;
+            error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
                                         LIS3DH_STATUS_REG,
                                         &status_reg);
-        if (error == NO_ERROR)
-        {
-            // Check if new data is available (STATUS_REG[3]=ZYXDA=1)
-            if ((status_reg & 0x08) > 0)
+            if (error == NO_ERROR)
             {
+                // Check if new data is available (STATUS_REG[3]=ZYXDA=1)
+                if ((status_reg & 0x08) > 0)
+                {
                     //Multiple register reading starting from OUT_X_L
                     error=I2C_Peripheral_ReadRegisterMulti(LIS3DH_DEVICE_ADDRESS,
 												LIS3DH_OUT_X_L, 6,
@@ -166,9 +170,9 @@ int main(void)
                     
                         UART_Debug_PutArray(OutArray,8);
                     }
-            }
-        } 
-        
+                }   
+            } 
+        }
     }
 }
 
