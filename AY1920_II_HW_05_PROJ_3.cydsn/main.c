@@ -1,11 +1,15 @@
 /* ========================================
+ * \file main.c
  *
- * Copyright YOUR COMPANY, THE YEAR
- * All Rights Reserved
- * UNPUBLISHED, LICENSED SOFTWARE.
- *
- * CONFIDENTIAL AND PROPRIETARY INFORMATION
- * WHICH IS THE PROPERTY OF your company.
+ * Source code for reading output data from 
+ * a LIS3DH tri-axial accelerometer in High Resolution
+ * Mode at 100 Hz. 
+ * 
+ * Output data is converted in mg units, while
+ * the conversion in m/s^2 units is perfomed
+ * in the Bridge Control Panel Variable Setting
+ * feature ( see HW_05_PALMIERI_MARTINA.ini for
+ * details).
  *
  * ========================================
 */

@@ -1,11 +1,11 @@
 /* ========================================
+ * \file main.c
  *
- * Copyright YOUR COMPANY, THE YEAR
- * All Rights Reserved
- * UNPUBLISHED, LICENSED SOFTWARE.
- *
- * CONFIDENTIAL AND PROPRIETARY INFORMATION
- * WHICH IS THE PROPERTY OF your company.
+ * Source code for reading output data from 
+ * a LIS3DH tri-axial accelerometer in Normal Mode
+ * at 100 Hz. 
+ * 
+   
  *
  * ========================================
 */
@@ -90,7 +90,7 @@ int main(void)
                                          ctrl_reg4);
     }
     
-    //Brief output acceleration data variables:
+    //Brief output acceleration data variables
     uint8_t AccelerationData[6];
     
     int16_t X_Out;

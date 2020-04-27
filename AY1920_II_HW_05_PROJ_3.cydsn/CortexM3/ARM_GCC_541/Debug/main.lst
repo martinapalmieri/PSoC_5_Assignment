@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 1
+ARM GAS  C:\Users\marti\AppData\Local\Temp\ccRiLJ7X.s 			page 1
 
 
    1              		.syntax unified
@@ -29,72 +29,76 @@ ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 1
   26              	.LFB64:
   27              		.file 1 "main.c"
    1:main.c        **** /* ========================================
-   2:main.c        ****  *
-   3:main.c        ****  * Copyright YOUR COMPANY, THE YEAR
-   4:main.c        ****  * All Rights Reserved
-   5:main.c        ****  * UNPUBLISHED, LICENSED SOFTWARE.
-   6:main.c        ****  *
-   7:main.c        ****  * CONFIDENTIAL AND PROPRIETARY INFORMATION
-   8:main.c        ****  * WHICH IS THE PROPERTY OF your company.
-   9:main.c        ****  *
-  10:main.c        ****  * ========================================
-  11:main.c        **** */
-  12:main.c        **** 
-  13:main.c        **** // Include header files
-  14:main.c        **** #include "I2C_Interface.h"
-  15:main.c        **** #include "InterruptRoutines.h"
-  16:main.c        **** #include "project.h"
-  17:main.c        **** #include "stdio.h"
-  18:main.c        **** 
-  19:main.c        **** //Brief slave device address
-  20:main.c        **** #define LIS3DH_DEVICE_ADDRESS 0x18
-  21:main.c        **** 
-  22:main.c        **** //Brief WHO AM I register address
-  23:main.c        **** #define LIS3DH_WHO_AM_I_REG_ADDR 0x0F
-  24:main.c        **** 
-  25:main.c        **** //Brief STATUS REGISTER address
-  26:main.c        **** #define LIS3DH_STATUS_REG 0x27
-  27:main.c        **** 
-  28:main.c        **** //Brieg CONTROL REGISTER 1 address
-  29:main.c        **** #define LIS3DH_CTRL_REG1 0x20
-  30:main.c        **** 
-ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 2
+   2:main.c        ****  * \file main.c
+   3:main.c        ****  *
+   4:main.c        ****  * Source code for reading output data from 
+   5:main.c        ****  * a LIS3DH tri-axial accelerometer in High Resolution
+   6:main.c        ****  * Mode at 100 Hz. 
+   7:main.c        ****  * 
+   8:main.c        ****  * Output data is converted in mg units, while
+   9:main.c        ****  * the conversion in m/s^2 units is perfomed
+  10:main.c        ****  * in the Bridge Control Panel Variable Setting
+  11:main.c        ****  * feature ( see HW_05_PALMIERI_MARTINA.ini for
+  12:main.c        ****  * details).
+  13:main.c        ****  *
+  14:main.c        ****  * ========================================
+  15:main.c        **** */
+  16:main.c        **** 
+  17:main.c        **** // Include header files
+  18:main.c        **** #include "I2C_Interface.h"
+  19:main.c        **** #include "InterruptRoutines.h"
+  20:main.c        **** #include "project.h"
+  21:main.c        **** #include "stdio.h"
+  22:main.c        **** 
+  23:main.c        **** //Brief slave device address
+  24:main.c        **** #define LIS3DH_DEVICE_ADDRESS 0x18
+  25:main.c        **** 
+  26:main.c        **** //Brief WHO AM I register address
+  27:main.c        **** #define LIS3DH_WHO_AM_I_REG_ADDR 0x0F
+  28:main.c        **** 
+  29:main.c        **** //Brief STATUS REGISTER address
+  30:main.c        **** #define LIS3DH_STATUS_REG 0x27
+ARM GAS  C:\Users\marti\AppData\Local\Temp\ccRiLJ7X.s 			page 2
 
 
-  31:main.c        **** /*Brief HEX value for CONTROL REGISTER 1: High resolution mode at 100 Hz
-  32:main.c        **** CTRL_REG1[3]=LPen=0 (HR mode);
-  33:main.c        **** CTRL_REG1[7:4]=ODR[3:0]=0101 (100 Hz)*/
-  34:main.c        **** #define LIS3DH_NORMAL_MODE_100_HZ_CTRL_REG1 0x57
-  35:main.c        **** 
-  36:main.c        **** 
-  37:main.c        **** //Brief CONTROL REGISTER 4 address
-  38:main.c        **** #define LIS3DH_CTRL_REG4 0x23
-  39:main.c        **** /*Brief HEX value for CONTROL REGISTER 4: +- 4.0 g FSR
-  40:main.c        **** CTRL_REG4[3]=1 (High resolution enabled)
-  41:main.c        **** CTRL_REG4[5:4]=FS[1:0]=01 (4.0 g FSR) */
-  42:main.c        **** #define LIS3DH_CTRL_REG4_2g 0x98
-  43:main.c        **** 
-  44:main.c        **** //Brief OUT_X_L register address (x-axis output LSB)
-  45:main.c        **** #define LIS3DH_OUT_X_L 0x28
-  46:main.c        **** 
-  47:main.c        **** //Brief OUT_Y_L register address (y-axis output LSB)
-  48:main.c        **** #define LIS3DH_OUT_Y_L 0x2A
-  49:main.c        **** 
-  50:main.c        **** //Brief OUT_Z_L register address (z-axis output LSB)
-  51:main.c        **** #define LIS3DH_OUT_Z_L 0x2C
-  52:main.c        **** 
-  53:main.c        **** //Brief HEADER and FOOTER values for UART communication
-  54:main.c        **** #define HEADER 0xA0
-  55:main.c        **** #define FOOTER 0xC0
+  31:main.c        **** 
+  32:main.c        **** //Brieg CONTROL REGISTER 1 address
+  33:main.c        **** #define LIS3DH_CTRL_REG1 0x20
+  34:main.c        **** 
+  35:main.c        **** /*Brief HEX value for CONTROL REGISTER 1: High resolution mode at 100 Hz
+  36:main.c        **** CTRL_REG1[3]=LPen=0 (HR mode);
+  37:main.c        **** CTRL_REG1[7:4]=ODR[3:0]=0101 (100 Hz)*/
+  38:main.c        **** #define LIS3DH_NORMAL_MODE_100_HZ_CTRL_REG1 0x57
+  39:main.c        **** 
+  40:main.c        **** 
+  41:main.c        **** //Brief CONTROL REGISTER 4 address
+  42:main.c        **** #define LIS3DH_CTRL_REG4 0x23
+  43:main.c        **** /*Brief HEX value for CONTROL REGISTER 4: +- 4.0 g FSR
+  44:main.c        **** CTRL_REG4[3]=1 (High resolution enabled)
+  45:main.c        **** CTRL_REG4[5:4]=FS[1:0]=01 (4.0 g FSR) */
+  46:main.c        **** #define LIS3DH_CTRL_REG4_2g 0x98
+  47:main.c        **** 
+  48:main.c        **** //Brief OUT_X_L register address (x-axis output LSB)
+  49:main.c        **** #define LIS3DH_OUT_X_L 0x28
+  50:main.c        **** 
+  51:main.c        **** //Brief OUT_Y_L register address (y-axis output LSB)
+  52:main.c        **** #define LIS3DH_OUT_Y_L 0x2A
+  53:main.c        **** 
+  54:main.c        **** //Brief OUT_Z_L register address (z-axis output LSB)
+  55:main.c        **** #define LIS3DH_OUT_Z_L 0x2C
   56:main.c        **** 
-  57:main.c        **** //Brief value of sensitivity in High Resolution mode (2 mg/digit)
-  58:main.c        **** #define HR_SENSITIVITY 2;
-  59:main.c        **** 
-  60:main.c        **** extern uint8_t flag;
-  61:main.c        **** 
-  62:main.c        **** int main(void)
-  63:main.c        **** {
-  28              		.loc 1 63 0
+  57:main.c        **** //Brief HEADER and FOOTER values for UART communication
+  58:main.c        **** #define HEADER 0xA0
+  59:main.c        **** #define FOOTER 0xC0
+  60:main.c        **** 
+  61:main.c        **** //Brief value of sensitivity in High Resolution mode (2 mg/digit)
+  62:main.c        **** #define HR_SENSITIVITY 2;
+  63:main.c        **** 
+  64:main.c        **** extern uint8_t flag;
+  65:main.c        **** 
+  66:main.c        **** int main(void)
+  67:main.c        **** {
+  28              		.loc 1 67 0
   29              		.cfi_startproc
   30              		@ args = 0, pretend = 0, frame = 24
   31              		@ frame_needed = 0, uses_anonymous_args = 0
@@ -103,179 +107,179 @@ ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 1
   34              		.cfi_offset 14, -4
   35 0002 87B0     		sub	sp, sp, #28
   36              		.cfi_def_cfa_offset 32
-  64:main.c        ****     CyGlobalIntEnable; 
-  37              		.loc 1 64 0
+  68:main.c        ****     CyGlobalIntEnable; 
+  37              		.loc 1 68 0
   38              		.syntax unified
-  39              	@ 64 "main.c" 1
+  39              	@ 68 "main.c" 1
   40 0004 62B6     		CPSIE   i
   41              	@ 0 "" 2
-  65:main.c        ****     
-  66:main.c        ****     //Initialization
-  67:main.c        ****     Timer_LISD3H_Start();
-  42              		.loc 1 67 0
+  69:main.c        ****     
+  70:main.c        ****     //Initialization
+  71:main.c        ****     Timer_LISD3H_Start();
+  42              		.loc 1 71 0
   43              		.thumb
+ARM GAS  C:\Users\marti\AppData\Local\Temp\ccRiLJ7X.s 			page 3
+
+
   44              		.syntax unified
   45 0006 FFF7FEFF 		bl	Timer_LISD3H_Start
   46              	.LVL0:
-  68:main.c        ****     I2C_Peripheral_Start();
-ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 3
-
-
-  47              		.loc 1 68 0
+  72:main.c        ****     I2C_Peripheral_Start();
+  47              		.loc 1 72 0
   48 000a FFF7FEFF 		bl	I2C_Peripheral_Start
   49              	.LVL1:
-  69:main.c        ****     UART_Debug_Start();
-  50              		.loc 1 69 0
+  73:main.c        ****     UART_Debug_Start();
+  50              		.loc 1 73 0
   51 000e FFF7FEFF 		bl	UART_Debug_Start
   52              	.LVL2:
-  70:main.c        ****     ISR_DataReady_StartEx(DataReady_ISR);
-  53              		.loc 1 70 0
+  74:main.c        ****     ISR_DataReady_StartEx(DataReady_ISR);
+  53              		.loc 1 74 0
   54 0012 3D48     		ldr	r0, .L8
   55 0014 FFF7FEFF 		bl	ISR_DataReady_StartEx
   56              	.LVL3:
-  71:main.c        ****     
-  72:main.c        ****     //"The boot procedure is complete about 5 milliseconds after device power-up."
-  73:main.c        ****     CyDelay(5); 
-  57              		.loc 1 73 0
+  75:main.c        ****     
+  76:main.c        ****     //"The boot procedure is complete about 5 milliseconds after device power-up."
+  77:main.c        ****     CyDelay(5); 
+  57              		.loc 1 77 0
   58 0018 0520     		movs	r0, #5
   59 001a FFF7FEFF 		bl	CyDelay
   60              	.LVL4:
-  74:main.c        ****    
-  75:main.c        ****     //Reading CONTROL REGISTER 1
-  76:main.c        ****     uint8_t ctrl_reg1; 
-  77:main.c        ****     ErrorCode error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
-  61              		.loc 1 77 0
+  78:main.c        ****    
+  79:main.c        ****     //Reading CONTROL REGISTER 1
+  80:main.c        ****     uint8_t ctrl_reg1; 
+  81:main.c        ****     ErrorCode error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
+  61              		.loc 1 81 0
   62 001e 0DF11702 		add	r2, sp, #23
   63 0022 2021     		movs	r1, #32
   64 0024 1820     		movs	r0, #24
   65 0026 FFF7FEFF 		bl	I2C_Peripheral_ReadRegister
   66              	.LVL5:
-  78:main.c        ****                                         LIS3DH_CTRL_REG1,
-  79:main.c        ****                                         &ctrl_reg1);
-  80:main.c        ****     //Writing CONTROL REGISTER 1
-  81:main.c        ****     if (ctrl_reg1 != LIS3DH_NORMAL_MODE_100_HZ_CTRL_REG1)
-  67              		.loc 1 81 0
+  82:main.c        ****                                         LIS3DH_CTRL_REG1,
+  83:main.c        ****                                         &ctrl_reg1);
+  84:main.c        ****     //Writing CONTROL REGISTER 1
+  85:main.c        ****     if (ctrl_reg1 != LIS3DH_NORMAL_MODE_100_HZ_CTRL_REG1)
+  67              		.loc 1 85 0
   68 002a 9DF81730 		ldrb	r3, [sp, #23]	@ zero_extendqisi2
   69 002e 572B     		cmp	r3, #87
   70 0030 06D0     		beq	.L2
-  82:main.c        ****     {
-  83:main.c        ****         ctrl_reg1 = LIS3DH_NORMAL_MODE_100_HZ_CTRL_REG1;
-  71              		.loc 1 83 0
+  86:main.c        ****     {
+  87:main.c        ****         ctrl_reg1 = LIS3DH_NORMAL_MODE_100_HZ_CTRL_REG1;
+  71              		.loc 1 87 0
   72 0032 5722     		movs	r2, #87
   73 0034 8DF81720 		strb	r2, [sp, #23]
-  84:main.c        ****         error = I2C_Peripheral_WriteRegister(LIS3DH_DEVICE_ADDRESS,
-  74              		.loc 1 84 0
+  88:main.c        ****         error = I2C_Peripheral_WriteRegister(LIS3DH_DEVICE_ADDRESS,
+  74              		.loc 1 88 0
   75 0038 2021     		movs	r1, #32
   76 003a 1820     		movs	r0, #24
   77 003c FFF7FEFF 		bl	I2C_Peripheral_WriteRegister
   78              	.LVL6:
   79              	.L2:
-  85:main.c        ****                                              LIS3DH_CTRL_REG1,
-  86:main.c        ****                                              ctrl_reg1);  
-  87:main.c        ****     }
-  88:main.c        ****    
-  89:main.c        ****     // Reading CONTROL REGISTER 4   
-  90:main.c        ****     uint8_t ctrl_reg4;
-  91:main.c        ****     error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
-  80              		.loc 1 91 0
-ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 4
+  89:main.c        ****                                              LIS3DH_CTRL_REG1,
+  90:main.c        ****                                              ctrl_reg1);  
+  91:main.c        ****     }
+  92:main.c        ****    
+ARM GAS  C:\Users\marti\AppData\Local\Temp\ccRiLJ7X.s 			page 4
 
 
+  93:main.c        ****     // Reading CONTROL REGISTER 4   
+  94:main.c        ****     uint8_t ctrl_reg4;
+  95:main.c        ****     error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
+  80              		.loc 1 95 0
   81 0040 0DF11602 		add	r2, sp, #22
   82 0044 2321     		movs	r1, #35
   83 0046 1820     		movs	r0, #24
   84 0048 FFF7FEFF 		bl	I2C_Peripheral_ReadRegister
   85              	.LVL7:
-  92:main.c        ****                                         LIS3DH_CTRL_REG4,
-  93:main.c        ****                                         &ctrl_reg4); 
-  94:main.c        ****     // Writing CONTROL REGISTER 4
-  95:main.c        ****     if (ctrl_reg4 != LIS3DH_CTRL_REG4_2g)
-  86              		.loc 1 95 0
+  96:main.c        ****                                         LIS3DH_CTRL_REG4,
+  97:main.c        ****                                         &ctrl_reg4); 
+  98:main.c        ****     // Writing CONTROL REGISTER 4
+  99:main.c        ****     if (ctrl_reg4 != LIS3DH_CTRL_REG4_2g)
+  86              		.loc 1 99 0
   87 004c 9DF81630 		ldrb	r3, [sp, #22]	@ zero_extendqisi2
   88 0050 982B     		cmp	r3, #152
   89 0052 06D0     		beq	.L3
-  96:main.c        ****     {
-  97:main.c        ****         ctrl_reg4 = LIS3DH_CTRL_REG4_2g;
-  90              		.loc 1 97 0
+ 100:main.c        ****     {
+ 101:main.c        ****         ctrl_reg4 = LIS3DH_CTRL_REG4_2g;
+  90              		.loc 1 101 0
   91 0054 9822     		movs	r2, #152
   92 0056 8DF81620 		strb	r2, [sp, #22]
-  98:main.c        ****         error = I2C_Peripheral_WriteRegister(LIS3DH_DEVICE_ADDRESS,
-  93              		.loc 1 98 0
+ 102:main.c        ****         error = I2C_Peripheral_WriteRegister(LIS3DH_DEVICE_ADDRESS,
+  93              		.loc 1 102 0
   94 005a 2321     		movs	r1, #35
   95 005c 1820     		movs	r0, #24
   96 005e FFF7FEFF 		bl	I2C_Peripheral_WriteRegister
   97              	.LVL8:
   98              	.L3:
-  99:main.c        ****                                          LIS3DH_CTRL_REG4,
- 100:main.c        ****                                          ctrl_reg4);
- 101:main.c        ****     }
- 102:main.c        ****     
- 103:main.c        ****      //Brief output acceleration data variables:
- 104:main.c        ****     uint8_t AccelerationData[6];
- 105:main.c        ****    
- 106:main.c        ****     //x-axis
- 107:main.c        ****     int16_t X_Out;
- 108:main.c        ****     int16_t X_Out_mg;
- 109:main.c        ****     //y-axis
- 110:main.c        ****     int16_t Y_Out;
- 111:main.c        ****     int16_t Y_Out_mg;
- 112:main.c        ****     //z-axis
- 113:main.c        ****     int16_t Z_Out;
- 114:main.c        ****     int16_t Z_Out_mg;
- 115:main.c        ****     
- 116:main.c        ****     uint8_t OutArray[8];
- 117:main.c        ****     
- 118:main.c        ****     
+ 103:main.c        ****                                          LIS3DH_CTRL_REG4,
+ 104:main.c        ****                                          ctrl_reg4);
+ 105:main.c        ****     }
+ 106:main.c        ****     
+ 107:main.c        ****      //Brief output acceleration data variables:
+ 108:main.c        ****     uint8_t AccelerationData[6];
+ 109:main.c        ****    
+ 110:main.c        ****     //x-axis
+ 111:main.c        ****     int16_t X_Out;
+ 112:main.c        ****     int16_t X_Out_mg;
+ 113:main.c        ****     //y-axis
+ 114:main.c        ****     int16_t Y_Out;
+ 115:main.c        ****     int16_t Y_Out_mg;
+ 116:main.c        ****     //z-axis
+ 117:main.c        ****     int16_t Z_Out;
+ 118:main.c        ****     int16_t Z_Out_mg;
  119:main.c        ****     
- 120:main.c        ****     //Header and footer for communication w/ Bridge Control Panel
- 121:main.c        ****     OutArray[0]=HEADER;
-  99              		.loc 1 121 0
+ 120:main.c        ****     uint8_t OutArray[8];
+ 121:main.c        ****     
+ 122:main.c        ****     
+ 123:main.c        ****     
+ 124:main.c        ****     //Header and footer for communication w/ Bridge Control Panel
+ 125:main.c        ****     OutArray[0]=HEADER;
+  99              		.loc 1 125 0
  100 0062 A023     		movs	r3, #160
  101 0064 8DF80830 		strb	r3, [sp, #8]
- 122:main.c        ****     OutArray[7]=FOOTER;
- 102              		.loc 1 122 0
+ 126:main.c        ****     OutArray[7]=FOOTER;
+ 102              		.loc 1 126 0
+ARM GAS  C:\Users\marti\AppData\Local\Temp\ccRiLJ7X.s 			page 5
+
+
  103 0068 C023     		movs	r3, #192
  104 006a 8DF80F30 		strb	r3, [sp, #15]
  105              	.L4:
- 123:main.c        ****     
-ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 5
-
-
- 124:main.c        ****     for(;;)
- 125:main.c        ****     {
- 126:main.c        ****         if (flag == 1){
- 106              		.loc 1 126 0
+ 127:main.c        ****     
+ 128:main.c        ****     for(;;)
+ 129:main.c        ****     {
+ 130:main.c        ****         if (flag == 1){
+ 106              		.loc 1 130 0
  107 006e 274B     		ldr	r3, .L8+4
  108 0070 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
  109 0072 012B     		cmp	r3, #1
  110 0074 FBD1     		bne	.L4
  111              	.LBB2:
- 127:main.c        ****             //Reading STATUS REGISTER to check for data availability
- 128:main.c        ****             uint8_t status_reg;
- 129:main.c        ****             error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
- 112              		.loc 1 129 0
+ 131:main.c        ****             //Reading STATUS REGISTER to check for data availability
+ 132:main.c        ****             uint8_t status_reg;
+ 133:main.c        ****             error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
+ 112              		.loc 1 133 0
  113 0076 0DF10702 		add	r2, sp, #7
  114 007a 2721     		movs	r1, #39
  115 007c 1820     		movs	r0, #24
  116 007e FFF7FEFF 		bl	I2C_Peripheral_ReadRegister
  117              	.LVL9:
- 130:main.c        ****                                         LIS3DH_STATUS_REG,
- 131:main.c        ****                                         &status_reg);
- 132:main.c        ****             if (error == NO_ERROR)
- 118              		.loc 1 132 0
+ 134:main.c        ****                                         LIS3DH_STATUS_REG,
+ 135:main.c        ****                                         &status_reg);
+ 136:main.c        ****             if (error == NO_ERROR)
+ 118              		.loc 1 136 0
  119 0082 0028     		cmp	r0, #0
  120 0084 F3D1     		bne	.L4
- 133:main.c        ****             {
- 134:main.c        ****                 // Check if new data is available (STATUS_REG[3]=ZYXDA=1)
- 135:main.c        ****                 if ((status_reg & 0x08) > 0)
- 121              		.loc 1 135 0
+ 137:main.c        ****             {
+ 138:main.c        ****                 // Check if new data is available (STATUS_REG[3]=ZYXDA=1)
+ 139:main.c        ****                 if ((status_reg & 0x08) > 0)
+ 121              		.loc 1 139 0
  122 0086 9DF80730 		ldrb	r3, [sp, #7]	@ zero_extendqisi2
  123 008a 13F0080F 		tst	r3, #8
  124 008e EED0     		beq	.L4
- 136:main.c        ****                 {
- 137:main.c        ****                     //Multiple register reading starting from OUT_X_L
- 138:main.c        ****                     error=I2C_Peripheral_ReadRegisterMulti(LIS3DH_DEVICE_ADDRESS,
- 125              		.loc 1 138 0
+ 140:main.c        ****                 {
+ 141:main.c        ****                     //Multiple register reading starting from OUT_X_L
+ 142:main.c        ****                     error=I2C_Peripheral_ReadRegisterMulti(LIS3DH_DEVICE_ADDRESS,
+ 125              		.loc 1 142 0
  126 0090 04AB     		add	r3, sp, #16
  127 0092 0622     		movs	r2, #6
  128 0094 2821     		movs	r1, #40
@@ -283,102 +287,102 @@ ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 1
  130              	.LVL10:
  131 0098 FFF7FEFF 		bl	I2C_Peripheral_ReadRegisterMulti
  132              	.LVL11:
- 139:main.c        **** 												LIS3DH_OUT_X_L, 6,
- 140:main.c        **** 												AccelerationData); 
- 141:main.c        ****                     if (error == NO_ERROR)
- 133              		.loc 1 141 0
+ 143:main.c        **** 												LIS3DH_OUT_X_L, 6,
+ 144:main.c        **** 												AccelerationData); 
+ 145:main.c        ****                     if (error == NO_ERROR)
+ 133              		.loc 1 145 0
  134 009c 0028     		cmp	r0, #0
  135 009e E6D1     		bne	.L4
- 142:main.c        ****                     {
- 143:main.c        ****                     
- 144:main.c        ****                         // Conversion of output data into right-justified 16 bit int (x-axis)
- 145:main.c        ****                         X_Out=(int16)(AccelerationData[0] | (AccelerationData[1] << 8)) >> 4;
- 136              		.loc 1 145 0
+ 146:main.c        ****                     {
+ 147:main.c        ****                     
+ 148:main.c        ****                         // Conversion of output data into right-justified 16 bit int (x-axis)
+ 149:main.c        ****                         X_Out=(int16)(AccelerationData[0] | (AccelerationData[1] << 8)) >> 4;
+ 136              		.loc 1 149 0
+ARM GAS  C:\Users\marti\AppData\Local\Temp\ccRiLJ7X.s 			page 6
+
+
  137 00a0 9DF81030 		ldrb	r3, [sp, #16]	@ zero_extendqisi2
  138 00a4 9DF81120 		ldrb	r2, [sp, #17]	@ zero_extendqisi2
  139 00a8 43EA0223 		orr	r3, r3, r2, lsl #8
  140 00ac 43F30B13 		sbfx	r3, r3, #4, #12
-ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 6
-
-
  141              	.LVL12:
- 146:main.c        ****                         //Data * sensitivity (HR mode) = [mg] (x-axis)
- 147:main.c        ****                         X_Out_mg= X_Out*HR_SENSITIVITY;
- 142              		.loc 1 147 0
+ 150:main.c        ****                         //Data * sensitivity (HR mode) = [mg] (x-axis)
+ 151:main.c        ****                         X_Out_mg= X_Out*HR_SENSITIVITY;
+ 142              		.loc 1 151 0
  143 00b0 5B00     		lsls	r3, r3, #1
  144              	.LVL13:
  145 00b2 9BB2     		uxth	r3, r3
  146              	.LVL14:
- 148:main.c        ****                         //MSB (x-axis)
- 149:main.c        ****                         OutArray[1]=(uint8_t)(X_Out_mg >> 8);
- 147              		.loc 1 149 0
+ 152:main.c        ****                         //MSB (x-axis)
+ 153:main.c        ****                         OutArray[1]=(uint8_t)(X_Out_mg >> 8);
+ 147              		.loc 1 153 0
  148 00b4 1A0A     		lsrs	r2, r3, #8
  149              	.LVL15:
  150 00b6 8DF80920 		strb	r2, [sp, #9]
- 150:main.c        ****                         //LSB (x-axis)
- 151:main.c        ****                         OutArray[2]=(uint8_t)(X_Out_mg & 0xFF);
- 151              		.loc 1 151 0
+ 154:main.c        ****                         //LSB (x-axis)
+ 155:main.c        ****                         OutArray[2]=(uint8_t)(X_Out_mg & 0xFF);
+ 151              		.loc 1 155 0
  152 00ba 8DF80A30 		strb	r3, [sp, #10]
- 152:main.c        ****                         
- 153:main.c        ****                         // Conversion of output data into right-justified 16 bit int (y-axis)
- 154:main.c        ****                         Y_Out=(int16)(AccelerationData[2] | (AccelerationData[3] << 8)) >> 4;
- 153              		.loc 1 154 0
+ 156:main.c        ****                         
+ 157:main.c        ****                         // Conversion of output data into right-justified 16 bit int (y-axis)
+ 158:main.c        ****                         Y_Out=(int16)(AccelerationData[2] | (AccelerationData[3] << 8)) >> 4;
+ 153              		.loc 1 158 0
  154 00be 9DF81230 		ldrb	r3, [sp, #18]	@ zero_extendqisi2
  155              	.LVL16:
  156 00c2 9DF81320 		ldrb	r2, [sp, #19]	@ zero_extendqisi2
  157 00c6 43EA0223 		orr	r3, r3, r2, lsl #8
  158 00ca 43F30B13 		sbfx	r3, r3, #4, #12
  159              	.LVL17:
- 155:main.c        ****                         //Data * sensitivity (HR mode) = [mg] (x-axis)
- 156:main.c        ****                         Y_Out_mg=Y_Out*HR_SENSITIVITY;
- 160              		.loc 1 156 0
+ 159:main.c        ****                         //Data * sensitivity (HR mode) = [mg] (x-axis)
+ 160:main.c        ****                         Y_Out_mg=Y_Out*HR_SENSITIVITY;
+ 160              		.loc 1 160 0
  161 00ce 5B00     		lsls	r3, r3, #1
  162              	.LVL18:
  163 00d0 9BB2     		uxth	r3, r3
  164              	.LVL19:
- 157:main.c        ****                         //MSB (x-axis)
- 158:main.c        ****                         OutArray[3]=(uint8_t)(Y_Out_mg >> 8);
- 165              		.loc 1 158 0
+ 161:main.c        ****                         //MSB (x-axis)
+ 162:main.c        ****                         OutArray[3]=(uint8_t)(Y_Out_mg >> 8);
+ 165              		.loc 1 162 0
  166 00d2 1A0A     		lsrs	r2, r3, #8
  167              	.LVL20:
  168 00d4 8DF80B20 		strb	r2, [sp, #11]
- 159:main.c        ****                         //LSB (x-axis)
- 160:main.c        ****                         OutArray[4]=(uint8_t)(Y_Out_mg & 0xFF);
- 169              		.loc 1 160 0
+ 163:main.c        ****                         //LSB (x-axis)
+ 164:main.c        ****                         OutArray[4]=(uint8_t)(Y_Out_mg & 0xFF);
+ 169              		.loc 1 164 0
  170 00d8 8DF80C30 		strb	r3, [sp, #12]
- 161:main.c        ****                         
- 162:main.c        ****                         // Conversion of output data into right-justified 16 bit int (z-axis)
- 163:main.c        ****                         Z_Out=(int16)(AccelerationData[4] | (AccelerationData[5] << 8)) >> 4;
- 171              		.loc 1 163 0
+ 165:main.c        ****                         
+ 166:main.c        ****                         // Conversion of output data into right-justified 16 bit int (z-axis)
+ 167:main.c        ****                         Z_Out=(int16)(AccelerationData[4] | (AccelerationData[5] << 8)) >> 4;
+ 171              		.loc 1 167 0
  172 00dc 9DF81430 		ldrb	r3, [sp, #20]	@ zero_extendqisi2
  173              	.LVL21:
  174 00e0 9DF81520 		ldrb	r2, [sp, #21]	@ zero_extendqisi2
  175 00e4 43EA0223 		orr	r3, r3, r2, lsl #8
+ARM GAS  C:\Users\marti\AppData\Local\Temp\ccRiLJ7X.s 			page 7
+
+
  176 00e8 43F30B13 		sbfx	r3, r3, #4, #12
  177              	.LVL22:
- 164:main.c        ****                         //Data * sensitivity (HR mode) = [mg] (x-axis)
- 165:main.c        ****                         Z_Out_mg=Z_Out*HR_SENSITIVITY;
-ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 7
-
-
- 178              		.loc 1 165 0
+ 168:main.c        ****                         //Data * sensitivity (HR mode) = [mg] (x-axis)
+ 169:main.c        ****                         Z_Out_mg=Z_Out*HR_SENSITIVITY;
+ 178              		.loc 1 169 0
  179 00ec 5B00     		lsls	r3, r3, #1
  180              	.LVL23:
  181 00ee 9BB2     		uxth	r3, r3
  182              	.LVL24:
- 166:main.c        ****                         //MSB (x-axis)
- 167:main.c        ****                         OutArray[5]=(uint8_t)(Z_Out_mg >> 8);
- 183              		.loc 1 167 0
+ 170:main.c        ****                         //MSB (x-axis)
+ 171:main.c        ****                         OutArray[5]=(uint8_t)(Z_Out_mg >> 8);
+ 183              		.loc 1 171 0
  184 00f0 1A0A     		lsrs	r2, r3, #8
  185              	.LVL25:
  186 00f2 8DF80D20 		strb	r2, [sp, #13]
- 168:main.c        ****                         //LSB (x-axis)
- 169:main.c        ****                         OutArray[6]=(uint8_t)(Z_Out_mg & 0xFF);
- 187              		.loc 1 169 0
+ 172:main.c        ****                         //LSB (x-axis)
+ 173:main.c        ****                         OutArray[6]=(uint8_t)(Z_Out_mg & 0xFF);
+ 187              		.loc 1 173 0
  188 00f6 8DF80E30 		strb	r3, [sp, #14]
- 170:main.c        ****                     
- 171:main.c        ****                         UART_Debug_PutArray(OutArray,8);
- 189              		.loc 1 171 0
+ 174:main.c        ****                     
+ 175:main.c        ****                         UART_Debug_PutArray(OutArray,8);
+ 189              		.loc 1 175 0
  190 00fa 0821     		movs	r1, #8
  191 00fc 0DEB0100 		add	r0, sp, r1
  192              	.LVL26:
@@ -414,13 +418,13 @@ ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 1
  222 000a 04       		.byte	0x4
  223 000b 01       		.uleb128 0x1
  224 000c C2010000 		.4byte	.LASF47
+ARM GAS  C:\Users\marti\AppData\Local\Temp\ccRiLJ7X.s 			page 8
+
+
  225 0010 0C       		.byte	0xc
  226 0011 86020000 		.4byte	.LASF48
  227 0015 7E000000 		.4byte	.LASF49
  228 0019 00000000 		.4byte	.Ldebug_ranges0+0
-ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 8
-
-
  229 001d 00000000 		.4byte	0
  230 0021 00000000 		.4byte	.Ldebug_line0
  231 0025 02       		.uleb128 0x2
@@ -474,13 +478,13 @@ ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 1
  279 007f 04       		.byte	0x4
  280 0080 05       		.byte	0x5
  281 0081 696E7400 		.ascii	"int\000"
+ARM GAS  C:\Users\marti\AppData\Local\Temp\ccRiLJ7X.s 			page 9
+
+
  282 0085 02       		.uleb128 0x2
  283 0086 04       		.byte	0x4
  284 0087 07       		.byte	0x7
  285 0088 80010000 		.4byte	.LASF11
-ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 9
-
-
  286 008c 03       		.uleb128 0x3
  287 008d A9010000 		.4byte	.LASF12
  288 0091 03       		.byte	0x3
@@ -534,18 +538,18 @@ ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 1
  336 00f2 02       		.uleb128 0x2
  337 00f3 08       		.byte	0x8
  338 00f4 04       		.byte	0x4
+ARM GAS  C:\Users\marti\AppData\Local\Temp\ccRiLJ7X.s 			page 10
+
+
  339 00f5 DD020000 		.4byte	.LASF22
  340 00f9 02       		.uleb128 0x2
  341 00fa 04       		.byte	0x4
  342 00fb 07       		.byte	0x7
-ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 10
-
-
  343 00fc 58020000 		.4byte	.LASF23
  344 0100 08       		.uleb128 0x8
  345 0101 6B010000 		.4byte	.LASF50
  346 0105 01       		.byte	0x1
- 347 0106 3E       		.byte	0x3e
+ 347 0106 42       		.byte	0x42
  348 0107 7E000000 		.4byte	0x7e
  349 010b 00000000 		.4byte	.LFB64
  350 010f 10010000 		.4byte	.LFE64-.LFB64
@@ -555,7 +559,7 @@ ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 1
  354 0119 09       		.uleb128 0x9
  355 011a 61010000 		.4byte	.LASF24
  356 011e 01       		.byte	0x1
- 357 011f 4C       		.byte	0x4c
+ 357 011f 50       		.byte	0x50
  358 0120 8C000000 		.4byte	0x8c
  359 0124 02       		.uleb128 0x2
  360 0125 91       		.byte	0x91
@@ -563,13 +567,13 @@ ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 1
  362 0127 0A       		.uleb128 0xa
  363 0128 61020000 		.4byte	.LASF25
  364 012c 01       		.byte	0x1
- 365 012d 4D       		.byte	0x4d
+ 365 012d 51       		.byte	0x51
  366 012e E7000000 		.4byte	0xe7
  367 0132 00000000 		.4byte	.LLST0
  368 0136 09       		.uleb128 0x9
  369 0137 76010000 		.4byte	.LASF26
  370 013b 01       		.byte	0x1
- 371 013c 5A       		.byte	0x5a
+ 371 013c 5E       		.byte	0x5e
  372 013d 8C000000 		.4byte	0x8c
  373 0141 02       		.uleb128 0x2
  374 0142 91       		.byte	0x91
@@ -577,7 +581,7 @@ ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 1
  376 0144 09       		.uleb128 0x9
  377 0145 FD020000 		.4byte	.LASF27
  378 0149 01       		.byte	0x1
- 379 014a 68       		.byte	0x68
+ 379 014a 6C       		.byte	0x6c
  380 014b DE020000 		.4byte	0x2de
  381 014f 02       		.uleb128 0x2
  382 0150 91       		.byte	0x91
@@ -585,46 +589,46 @@ ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 1
  384 0152 0A       		.uleb128 0xa
  385 0153 70010000 		.4byte	.LASF28
  386 0157 01       		.byte	0x1
- 387 0158 6B       		.byte	0x6b
+ 387 0158 6F       		.byte	0x6f
  388 0159 97000000 		.4byte	0x97
  389 015d 1E000000 		.4byte	.LLST1
  390 0161 0A       		.uleb128 0xa
  391 0162 B9010000 		.4byte	.LASF29
  392 0166 01       		.byte	0x1
- 393 0167 6C       		.byte	0x6c
+ 393 0167 70       		.byte	0x70
  394 0168 97000000 		.4byte	0x97
  395 016c 70000000 		.4byte	.LLST2
+ARM GAS  C:\Users\marti\AppData\Local\Temp\ccRiLJ7X.s 			page 11
+
+
  396 0170 0A       		.uleb128 0xa
  397 0171 69000000 		.4byte	.LASF30
  398 0175 01       		.byte	0x1
- 399 0176 6E       		.byte	0x6e
-ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 11
-
-
+ 399 0176 72       		.byte	0x72
  400 0177 97000000 		.4byte	0x97
  401 017b A7000000 		.4byte	.LLST3
  402 017f 0A       		.uleb128 0xa
  403 0180 58010000 		.4byte	.LASF31
  404 0184 01       		.byte	0x1
- 405 0185 6F       		.byte	0x6f
+ 405 0185 73       		.byte	0x73
  406 0186 97000000 		.4byte	0x97
  407 018a F9000000 		.4byte	.LLST4
  408 018e 0A       		.uleb128 0xa
  409 018f 0A000000 		.4byte	.LASF32
  410 0193 01       		.byte	0x1
- 411 0194 71       		.byte	0x71
+ 411 0194 75       		.byte	0x75
  412 0195 97000000 		.4byte	0x97
  413 0199 30010000 		.4byte	.LLST5
  414 019d 0A       		.uleb128 0xa
  415 019e C4000000 		.4byte	.LASF33
  416 01a2 01       		.byte	0x1
- 417 01a3 72       		.byte	0x72
+ 417 01a3 76       		.byte	0x76
  418 01a4 97000000 		.4byte	0x97
  419 01a8 82010000 		.4byte	.LLST6
  420 01ac 09       		.uleb128 0x9
  421 01ad 75000000 		.4byte	.LASF34
  422 01b1 01       		.byte	0x1
- 423 01b2 74       		.byte	0x74
+ 423 01b2 78       		.byte	0x78
  424 01b3 EE020000 		.4byte	0x2ee
  425 01b7 02       		.uleb128 0x2
  426 01b8 91       		.byte	0x91
@@ -636,7 +640,7 @@ ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 1
  432 01c7 09       		.uleb128 0x9
  433 01c8 10000000 		.4byte	.LASF35
  434 01cc 01       		.byte	0x1
- 435 01cd 80       		.byte	0x80
+ 435 01cd 84       		.byte	0x84
  436 01ce 8C000000 		.4byte	0x8c
  437 01d2 02       		.uleb128 0x2
  438 01d3 91       		.byte	0x91
@@ -654,13 +658,13 @@ ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 1
  450 01e8 01       		.uleb128 0x1
  451 01e9 51       		.byte	0x51
  452 01ea 02       		.uleb128 0x2
+ARM GAS  C:\Users\marti\AppData\Local\Temp\ccRiLJ7X.s 			page 12
+
+
  453 01eb 08       		.byte	0x8
  454 01ec 27       		.byte	0x27
  455 01ed 0D       		.uleb128 0xd
  456 01ee 01       		.uleb128 0x1
-ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 12
-
-
  457 01ef 52       		.byte	0x52
  458 01f0 02       		.uleb128 0x2
  459 01f1 91       		.byte	0x91
@@ -714,13 +718,13 @@ ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 1
  507 0233 3B030000 		.4byte	0x33b
  508 0237 0F       		.uleb128 0xf
  509 0238 0E000000 		.4byte	.LVL1
+ARM GAS  C:\Users\marti\AppData\Local\Temp\ccRiLJ7X.s 			page 13
+
+
  510 023c 46030000 		.4byte	0x346
  511 0240 0F       		.uleb128 0xf
  512 0241 12000000 		.4byte	.LVL2
  513 0245 51030000 		.4byte	0x351
-ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 13
-
-
  514 0249 0F       		.uleb128 0xf
  515 024a 18000000 		.4byte	.LVL3
  516 024e 5C030000 		.4byte	0x35c
@@ -774,13 +778,13 @@ ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 1
  564 029c 0D       		.uleb128 0xd
  565 029d 01       		.uleb128 0x1
  566 029e 52       		.byte	0x52
+ARM GAS  C:\Users\marti\AppData\Local\Temp\ccRiLJ7X.s 			page 14
+
+
  567 029f 02       		.uleb128 0x2
  568 02a0 08       		.byte	0x8
  569 02a1 57       		.byte	0x57
  570 02a2 00       		.byte	0
-ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 14
-
-
  571 02a3 0C       		.uleb128 0xc
  572 02a4 4C000000 		.4byte	.LVL7
  573 02a8 1A030000 		.4byte	0x31a
@@ -834,13 +838,13 @@ ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 1
  621 02ed 00       		.byte	0
  622 02ee 10       		.uleb128 0x10
  623 02ef 8C000000 		.4byte	0x8c
+ARM GAS  C:\Users\marti\AppData\Local\Temp\ccRiLJ7X.s 			page 15
+
+
  624 02f3 FE020000 		.4byte	0x2fe
  625 02f7 11       		.uleb128 0x11
  626 02f8 F9000000 		.4byte	0xf9
  627 02fc 07       		.byte	0x7
-ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 15
-
-
  628 02fd 00       		.byte	0
  629 02fe 12       		.uleb128 0x12
  630 02ff F8000000 		.4byte	.LASF36
@@ -852,7 +856,7 @@ ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 1
  636 030f 14       		.uleb128 0x14
  637 0310 8D010000 		.4byte	.LASF37
  638 0314 01       		.byte	0x1
- 639 0315 3C       		.byte	0x3c
+ 639 0315 40       		.byte	0x40
  640 0316 8C000000 		.4byte	0x8c
  641 031a 15       		.uleb128 0x15
  642 031b 92020000 		.4byte	.LASF38
@@ -894,13 +898,13 @@ ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 1
  678 036c F5020000 		.4byte	.LASF45
  679 0370 0B       		.byte	0xb
  680 0371 76       		.byte	0x76
+ARM GAS  C:\Users\marti\AppData\Local\Temp\ccRiLJ7X.s 			page 16
+
+
  681 0372 15       		.uleb128 0x15
  682 0373 3B010000 		.4byte	.LASF46
  683 0377 3B010000 		.4byte	.LASF46
  684 037b 07       		.byte	0x7
-ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 16
-
-
  685 037c 43       		.byte	0x43
  686 037d 00       		.byte	0
  687              		.section	.debug_abbrev,"",%progbits
@@ -954,13 +958,13 @@ ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 1
  735 002e 0B       		.uleb128 0xb
  736 002f 0B       		.uleb128 0xb
  737 0030 3E       		.uleb128 0x3e
+ARM GAS  C:\Users\marti\AppData\Local\Temp\ccRiLJ7X.s 			page 17
+
+
  738 0031 0B       		.uleb128 0xb
  739 0032 03       		.uleb128 0x3
  740 0033 08       		.uleb128 0x8
  741 0034 00       		.byte	0
-ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 17
-
-
  742 0035 00       		.byte	0
  743 0036 05       		.uleb128 0x5
  744 0037 16       		.uleb128 0x16
@@ -1014,13 +1018,13 @@ ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 1
  792 0067 19       		.uleb128 0x19
  793 0068 49       		.uleb128 0x49
  794 0069 13       		.uleb128 0x13
+ARM GAS  C:\Users\marti\AppData\Local\Temp\ccRiLJ7X.s 			page 18
+
+
  795 006a 8701     		.uleb128 0x87
  796 006c 19       		.uleb128 0x19
  797 006d 11       		.uleb128 0x11
  798 006e 01       		.uleb128 0x1
-ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 18
-
-
  799 006f 12       		.uleb128 0x12
  800 0070 06       		.uleb128 0x6
  801 0071 40       		.uleb128 0x40
@@ -1074,13 +1078,13 @@ ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 1
  849 00a2 00       		.byte	0
  850 00a3 0C       		.uleb128 0xc
  851 00a4 898201   		.uleb128 0x4109
+ARM GAS  C:\Users\marti\AppData\Local\Temp\ccRiLJ7X.s 			page 19
+
+
  852 00a7 01       		.byte	0x1
  853 00a8 11       		.uleb128 0x11
  854 00a9 01       		.uleb128 0x1
  855 00aa 31       		.uleb128 0x31
-ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 19
-
-
  856 00ab 13       		.uleb128 0x13
  857 00ac 01       		.uleb128 0x1
  858 00ad 13       		.uleb128 0x13
@@ -1134,13 +1138,13 @@ ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 1
  906 00e4 12       		.uleb128 0x12
  907 00e5 34       		.uleb128 0x34
  908 00e6 00       		.byte	0
+ARM GAS  C:\Users\marti\AppData\Local\Temp\ccRiLJ7X.s 			page 20
+
+
  909 00e7 03       		.uleb128 0x3
  910 00e8 0E       		.uleb128 0xe
  911 00e9 3A       		.uleb128 0x3a
  912 00ea 0B       		.uleb128 0xb
-ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 20
-
-
  913 00eb 3B       		.uleb128 0x3b
  914 00ec 05       		.uleb128 0x5
  915 00ed 49       		.uleb128 0x49
@@ -1194,13 +1198,13 @@ ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 1
  963 011d 00       		.byte	0
  964 011e 00       		.byte	0
  965              		.section	.debug_loc,"",%progbits
+ARM GAS  C:\Users\marti\AppData\Local\Temp\ccRiLJ7X.s 			page 21
+
+
  966              	.Ldebug_loc0:
  967              	.LLST0:
  968 0000 82000000 		.4byte	.LVL9
  969 0004 98000000 		.4byte	.LVL10
-ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 21
-
-
  970 0008 0100     		.2byte	0x1
  971 000a 50       		.byte	0x50
  972 000b 9C000000 		.4byte	.LVL11
@@ -1254,13 +1258,13 @@ ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 1
  1020 005c 01       		.byte	0x1
  1021 005d 08       		.byte	0x8
  1022 005e FF       		.byte	0xff
+ARM GAS  C:\Users\marti\AppData\Local\Temp\ccRiLJ7X.s 			page 22
+
+
  1023 005f 1A       		.byte	0x1a
  1024 0060 21       		.byte	0x21
  1025 0061 09       		.byte	0x9
  1026 0062 F4       		.byte	0xf4
-ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 22
-
-
  1027 0063 24       		.byte	0x24
  1028 0064 09       		.byte	0x9
  1029 0065 F8       		.byte	0xf8
@@ -1314,13 +1318,13 @@ ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 1
  1077 00ba 1300     		.2byte	0x13
  1078 00bc 72       		.byte	0x72
  1079 00bd 00       		.sleb128 0
+ARM GAS  C:\Users\marti\AppData\Local\Temp\ccRiLJ7X.s 			page 23
+
+
  1080 00be 38       		.byte	0x38
  1081 00bf 24       		.byte	0x24
  1082 00c0 91       		.byte	0x91
  1083 00c1 72       		.sleb128 -14
-ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 23
-
-
  1084 00c2 94       		.byte	0x94
  1085 00c3 01       		.byte	0x1
  1086 00c4 08       		.byte	0x8
@@ -1374,13 +1378,13 @@ ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 1
  1134 010e 91       		.byte	0x91
  1135 010f 73       		.sleb128 -13
  1136 0110 94       		.byte	0x94
+ARM GAS  C:\Users\marti\AppData\Local\Temp\ccRiLJ7X.s 			page 24
+
+
  1137 0111 01       		.byte	0x1
  1138 0112 08       		.byte	0x8
  1139 0113 FF       		.byte	0xff
  1140 0114 1A       		.byte	0x1a
-ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 24
-
-
  1141 0115 38       		.byte	0x38
  1142 0116 24       		.byte	0x24
  1143 0117 91       		.byte	0x91
@@ -1434,13 +1438,13 @@ ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 1
  1191 0160 1800     		.2byte	0x18
  1192 0162 91       		.byte	0x91
  1193 0163 75       		.sleb128 -11
+ARM GAS  C:\Users\marti\AppData\Local\Temp\ccRiLJ7X.s 			page 25
+
+
  1194 0164 94       		.byte	0x94
  1195 0165 01       		.byte	0x1
  1196 0166 08       		.byte	0x8
  1197 0167 FF       		.byte	0xff
-ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 25
-
-
  1198 0168 1A       		.byte	0x1a
  1199 0169 38       		.byte	0x38
  1200 016a 24       		.byte	0x24
@@ -1488,19 +1492,19 @@ ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 1
  1242 000c 00000000 		.4byte	0
  1243              		.section	.debug_line,"",%progbits
  1244              	.Ldebug_line0:
- 1245 0000 E9010000 		.section	.debug_str,"MS",%progbits,1
+ 1245 0000 EA010000 		.section	.debug_str,"MS",%progbits,1
  1245      0200AF01 
  1245      00000201 
  1245      FB0E0D00 
  1245      01010101 
  1246              	.LASF2:
+ARM GAS  C:\Users\marti\AppData\Local\Temp\ccRiLJ7X.s 			page 26
+
+
  1247 0000 5F5F7569 		.ascii	"__uint8_t\000"
  1247      6E74385F 
  1247      7400
  1248              	.LASF32:
-ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 26
-
-
  1249 000a 5A5F4F75 		.ascii	"Z_Out\000"
  1249      7400
  1250              	.LASF35:
@@ -1554,13 +1558,13 @@ ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 1
  1272 00ab 32305F49 		.ascii	"20_II_HW_05_PROJ_3.cydsn\000"
  1272      495F4857 
  1272      5F30355F 
+ARM GAS  C:\Users\marti\AppData\Local\Temp\ccRiLJ7X.s 			page 27
+
+
  1272      50524F4A 
  1272      5F332E63 
  1273              	.LASF33:
  1274 00c4 5A5F4F75 		.ascii	"Z_Out_mg\000"
-ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 27
-
-
  1274      745F6D67 
  1274      00
  1275              	.LASF15:
@@ -1614,13 +1618,13 @@ ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 1
  1295              	.LASF50:
  1296 016b 6D61696E 		.ascii	"main\000"
  1296      00
+ARM GAS  C:\Users\marti\AppData\Local\Temp\ccRiLJ7X.s 			page 28
+
+
  1297              	.LASF28:
  1298 0170 585F4F75 		.ascii	"X_Out\000"
  1298      7400
  1299              	.LASF26:
-ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 28
-
-
  1300 0176 6374726C 		.ascii	"ctrl_reg4\000"
  1300      5F726567 
  1300      3400
@@ -1674,13 +1678,13 @@ ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 1
  1321              	.LASF25:
  1322 0261 6572726F 		.ascii	"error\000"
  1322      7200
+ARM GAS  C:\Users\marti\AppData\Local\Temp\ccRiLJ7X.s 			page 29
+
+
  1323              	.LASF9:
  1324 0267 6C6F6E67 		.ascii	"long long int\000"
  1324      206C6F6E 
  1324      6720696E 
-ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 29
-
-
  1324      7400
  1325              	.LASF43:
  1326 0275 55415254 		.ascii	"UART_Debug_Start\000"
@@ -1734,13 +1738,13 @@ ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 1
  1348      74696F6E 
  1348      44617461 
  1348      00
+ARM GAS  C:\Users\marti\AppData\Local\Temp\ccRiLJ7X.s 			page 30
+
+
  1349              	.LASF42:
  1350 030e 4932435F 		.ascii	"I2C_Peripheral_Start\000"
  1350      50657269 
  1350      70686572 
-ARM GAS  C:\Users\marti\AppData\Local\Temp\ccYNZzDE.s 			page 30
-
-
  1350      616C5F53 
  1350      74617274 
  1351              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran
